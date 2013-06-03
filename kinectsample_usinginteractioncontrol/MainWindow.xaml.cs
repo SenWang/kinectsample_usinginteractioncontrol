@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Kinect.Toolkit;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,14 +16,30 @@ using System.Windows.Shapes;
 
 namespace kinectsample_usinginteractioncontrol
 {
-    /// <summary>
-    /// MainWindow.xaml 的互動邏輯
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
+            Loaded += MainWindow_Loaded;
+        }
+
+        KinectSensorChooser sensorChooser;
+        void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            sensorChooser = new KinectSensorChooser(); 
+            sensorChooser.KinectChanged +=sensorChooser_KinectChanged;
+            sensorChooserUI.KinectSensorChooser = sensorChooser;
+            sensorChooser.Start(); 
+        }
+
+        void sensorChooser_KinectChanged(object sender, KinectChangedEventArgs e)
+        {
+            if(e.NewSensor == null)
+                Title = "找不到 Kinect感應器";
+            else
+                Title = "感應器狀態 : " + e.NewSensor.Status ;
+                    
         }
     }
 }
